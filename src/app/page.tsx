@@ -1,69 +1,114 @@
-import Image from "next/image";
+import type { ReactNode } from "react";
+import { MonitorDown, FileCheck2, ShieldCheck } from "lucide-react";
+import PdfCompressor from "@/components/pdf-compressor";
+import { Card, CardContent } from "@/components/ui/card";
+
+const FEATURES = [
+  {
+    icon: ShieldCheck,
+    title: "Your files stay private",
+    body: "Everything runs in your browser. Nothing is uploaded, stored, or tracked — so your documents never leave your device.",
+  },
+  {
+    icon: MonitorDown,
+    title: "No limits",
+    body: "No file size caps, no sign-ups, no queues. Any PDF works, and the only limit is what your own device can handle.",
+  },
+  {
+    icon: FileCheck2,
+    title: "No server costs",
+    body: "Compression is powered entirely by your CPU and pursuit of smaller files — we don't spend a cent on processing it.",
+  },
+];
+
+const STEPS = [
+  {
+    step: "01",
+    title: "Drop your PDF",
+    body: "Drag and drop or browse for any PDF file. It stays on your device the entire time.",
+  },
+  {
+    step: "02",
+    title: "Pick a strength",
+    body: "Slide toward smaller size or better quality — the page images are re-encoded to match.",
+  },
+  {
+    step: "03",
+    title: "Download",
+    body: "Grab your compressed PDF instantly. Adjust the strength and re-compress whenever you like.",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <div className="flex flex-1 flex-col">
+      <Section>
+        <div className="mx-auto max-w-3xl space-y-6 text-center">
+          <h1 className="text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+            Shrink your PDFs,{" "}
+            <span className="text-muted-foreground">without sending them anywhere.</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mx-auto max-w-2xl text-base text-muted-foreground sm:text-lg lg:text-xl">
+            Compress PDF files instantly and privately. Processing happens 100% in
+            your browser — your documents never leave your device.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <PdfCompressor />
+      </Section>
+
+      <Section className="bg-muted/40">
+        <div className="grid gap-4 sm:grid-cols-3">
+          {FEATURES.map(({ icon: Icon, title, body }) => (
+            <Card key={title} className="border-border/60 bg-background sm:rounded-3xl">
+              <CardContent className="space-y-4 p-6 sm:p-8">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-muted text-foreground">
+                  <Icon className="size-5" />
+                </div>
+                <h2 className="text-base font-semibold lg:text-lg">{title}</h2>
+                <p className="text-sm leading-relaxed text-muted-foreground lg:text-base">{body}</p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
-      </main>
+      </Section>
+
+      <Section>
+        <div className="mx-auto max-w-3xl space-y-3 text-center">
+          <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl">
+            How it works
+          </h2>
+          <p className="text-base text-muted-foreground lg:text-lg">
+            Three steps, all on your device.
+          </p>
+        </div>
+        <div className="mx-auto grid max-w-5xl gap-12 sm:grid-cols-3 sm:gap-10">
+          {STEPS.map(({ step, title, body }) => (
+            <div key={step} className="space-y-4 text-center sm:text-left">
+              <p className="text-sm font-mono text-muted-foreground">{step}</p>
+              <h3 className="text-base font-medium lg:text-lg">{title}</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground lg:text-base">{body}</p>
+            </div>
+          ))}
+        </div>
+      </Section>
     </div>
+  );
+}
+
+function Section({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section
+      className={`space-y-12 px-6 py-16 sm:px-8 sm:space-y-16 sm:py-24 lg:px-10 ${className}`}
+    >
+      <div className="mx-auto flex w-full max-w-7xl flex-col items-center space-y-12 sm:space-y-16">
+        {children}
+      </div>
+    </section>
   );
 }

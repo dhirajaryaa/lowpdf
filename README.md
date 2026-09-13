@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LowPDF
 
-## Getting Started
+A privacy-first PDF compression tool. Drop a PDF, pick a compression strength, and download a smaller version — **100% client-side**. No uploads, no servers, no tracking. Your documents never leave your device.
 
-First, run the development server:
+Built with Next.js (App Router), Tailwind CSS, shadcn/ui, pdf.js, and pdf-lib.
+
+## How compression works
+
+Compression happens entirely in the browser (`src/lib/compress-pdf.ts`):
+
+1. **pdf.js** parses the PDF and renders each page to a `<canvas>` at a scale derived from the chosen strength (lower strength = fewer pixels).
+2. Each canvas is re-encoded as a **JPEG** image with a quality matching the strength.
+3. **pdf-lib** embeds the JPEGs into a fresh PDF, preserving original page sizes.
+
+Because there is no server side, there are no files to clean up and no per-use costs.
+
+| Strength (slider) | Pixel scale | JPEG quality |
+| ----------------- | ----------- | ------------ |
+| 1 (max compression) | 0.45× | 0.30 |
+| 100 (best quality)  | 1.0×  | 0.95 |
+
+> **Tip for image-heavy PDFs (scans, screenshots, photos):** the results are dramatic.
+> **Text-only PDFs** are usually already well-compressed; rasterizing them can occasionally produce a larger file — the UI shows the percentage saved so you can press **Re-compress** with max strength.
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
+# -> http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Command       | Description                  |
+| ------------- | ---------------------------- |
+| `pnpm dev`    | Start the dev server         |
+| `pnpm build`  | Production build             |
+| `pnpm start`  | Serve the production build   |
+| `pnpm lint`   | Run ESLint                   |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project structure
 
-## Learn More
+```
+src/
+├── app/
+│   ├── layout.tsx          # Root layout (metadata, header, footer)
+│   └── page.tsx            # Landing page (hero, compressor, features)
+├── components/
+│   ├── pdf-compressor.tsx  # Client-side compressor UI (dropzone → result)
+│   ├── site-header.tsx     # Minimal top bar
+│   ├── site-footer.tsx     # Footer with creator links
+│   └── ui/                 # shadcn/ui components
+└── lib/
+    └── compress-pdf.ts     # Compression engine (pdf.js + pdf-lib)
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Tech stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Next.js 16** (App Router, TypeScript, Turbopack)
+- **Tailwind CSS 4** + **shadcn/ui**
+- **pdf.js** — PDF parsing & page rasterization
+- **pdf-lib** — new PDF assembly & JPEG embedding
+- **lucide-react** — icons
+- Package manager: **pnpm**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
+Fully static-friendly. Deploys to Vercel / Netlify / Cloudflare Pages as-is. No environment variables required.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Author
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Created by [Dhiraj Arya](https://dhirajarya.in) — self-taught full-stack developer.
+
+- GitHub: [@dhirajaryaa](https://github.com/dhirajaryaa)
+- X / Twitter: [@dhirajarya01](https://twitter.com/dhirajarya01)
+- LinkedIn: [dhirajarya01](https://linkedin.com/in/dhirajarya01)
+- YouTube: [@dhirajaryaa](https://youtube.com/@dhirajaryaa)
+- Email: [dhirajarya.ptn@gmail.com](mailto:dhirajarya.ptn@gmail.com)
