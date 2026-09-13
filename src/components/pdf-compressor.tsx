@@ -48,6 +48,8 @@ function formatBytes(bytes: number) {
 export default function PdfCompressor() {
   const [file, setFile] = useState<File | null>(null);
   const [level, setLevel] = useState(55);
+  const [presetId, setPresetId] = useState<PresetId | null>("balanced");
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
   const [progress, setProgress] = useState(0);
   const [progressLabel, setProgressLabel] = useState("");
@@ -150,13 +152,11 @@ export default function PdfCompressor() {
     setError(null);
     setStatus("idle");
     setProgress(0);
+    setPresetId("balanced");
+    setLevel(55);
+    setShowAdvanced(false);
     if (inputRef.current) inputRef.current.value = "";
   }, []);
-
-  const activeLevel =
-    LEVEL_LABELS.reduce((closest, item) =>
-      Math.abs(item.level - level) < Math.abs(closest.level - level) ? item : closest,
-    )?.label ?? "Balanced";
 
   return (
     <Card className="w-full max-w-2xl border-border/60 bg-card shadow-sm sm:rounded-3xl">
@@ -206,28 +206,77 @@ export default function PdfCompressor() {
 
             {status === "ready" ? (
               <div className="space-y-6">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="strength">Compression strength</Label>
-                    <Badge variant="secondary" className="font-normal tabular-nums">
-                      {activeLevel}
-                    </Badge>
+                <div className="space-y-3">
+                  <Label>Compression</Label>
+                  <div
+                    role="radiogroup"
+                    aria-label="Compression level"
+                    className="grid grid-cols-3 gap-2"
+                  >
+                    {PRESETS.map((preset) => {
+                      const active = presetId === preset.id;
+                      return (
+                        <button
+                          key={preset.id}
+                          type="button"
+                          role="radio"
+                          aria-checked={active}
+                          onClick={() => {
+                            setPresetId(preset.id);
+                            setLevel(preset.level);
+                          }}
+                          className={`flex flex-col items-center gap-0.5 rounded-xl border px-3 py-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                            active
+                              ? "border-foreground bg-foreground text-background"
+                              : "border-border bg-background hover:border-foreground/40"
+                          }`}
+                        >
+                          <span className="text-sm font-medium">{preset.label}</span>
+                          <span
+                            className={`text-xs ${
+                              active ? "text-background/70" : "text-muted-foreground"
+                            }`}
+                          >
+                            {preset.hint}
+                          </span>
+                        </button>
+                      );
+                    })}
                   </div>
-                  <Slider
-                    id="strength"
-                    min={1}
-                    max={100}
-                    step={1}
-                    value={[level]}
-                    onValueChange={(value) =>
-                      setLevel(Array.isArray(value) ? value[0] : value)
-                    }
-                    aria-label="Compression strength"
-                  />
-                  <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>Smaller file</span>
-                    <span>Better quality</span>
-                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowAdvanced((v) => !v)}
+                    aria-expanded={showAdvanced}
+                    className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    <ChevronDown
+                      className={`size-4 transition-transform ${showAdvanced ? "rotate-180" : ""}`}
+                    />
+                    More options
+                  </button>
+
+                  {showAdvanced ? (
+                    <div className="space-y-3 pt-2">
+                      <Slider
+                        id="strength"
+                        min={1}
+                        max={100}
+                        step={1}
+                        value={[level]}
+                        onValueChange={(value) => {
+                          const next = Array.isArray(value) ? value[0] : value;
+                          setLevel(next);
+                          setPresetId(null);
+                        }}
+                        aria-label="Compression strength"
+                      />
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>Smaller file</span>
+                        <span>Better quality</span>
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
 
                 <div className="flex items-center gap-2 rounded-xl border border-border/60 bg-muted/40 px-4 py-3 text-sm text-muted-foreground">

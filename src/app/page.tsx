@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { MonitorDown, FileCheck2, ShieldCheck } from "lucide-react";
 import PdfCompressor from "@/components/pdf-compressor";
+import MoreTools from "@/components/more-tools";
 import { Card, CardContent } from "@/components/ui/card";
 
 const FEATURES = [
@@ -91,6 +92,8 @@ export default function Home() {
           ))}
         </div>
       </Section>
+
+      <MoreTools />
     </div>
   );
 }

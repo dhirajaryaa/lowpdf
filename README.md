@@ -14,10 +14,14 @@ Compression happens entirely in the browser (`src/lib/compress-pdf.ts`):
 
 Because there is no server side, there are no files to clean up and no per-use costs.
 
-| Strength (slider) | Pixel scale | JPEG quality |
-| ----------------- | ----------- | ------------ |
-| 1 (max compression) | 0.45× | 0.30 |
-| 100 (best quality)  | 1.0×  | 0.95 |
+| Preset / slider value   | Pixel scale | JPEG quality |
+| ----------------------- | ----------- | ------------ |
+| Compact (20)            | 0.56×       | 0.43         |
+| Balanced (55, default)  | 0.75×       | 0.66         |
+| Best quality (85)       | 0.92×       | 0.85         |
+| Custom slider (1–100)   | 0.45–1.0×   | 0.30–0.95    |
+
+After uploading, the UI shows three quality presets — **Compact**, **Balanced**, and **Best quality** — so you get predictable quality without surprises. A **More options** toggle reveals the fine-grained slider (1–100) if you want manual control.
 
 > **Tip for image-heavy PDFs (scans, screenshots, photos):** the results are dramatic.
 > **Text-only PDFs** are usually already well-compressed; rasterizing them can occasionally produce a larger file — the UI shows the percentage saved so you can press **Re-compress** with max strength.
