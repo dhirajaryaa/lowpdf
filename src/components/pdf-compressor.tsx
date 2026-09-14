@@ -6,7 +6,6 @@ import {
   CheckCircle2,
   ChevronDown,
   Download,
-  FileText,
   Loader2,
   Lock,
   UploadCloud,
@@ -15,6 +14,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import Logo from "@/components/logo";
+import PdfPreview from "@/components/pdf-preview";
 import { Slider } from "@/components/ui/slider";
 
 type Status = "idle" | "ready" | "compressing" | "done" | "error";
@@ -184,7 +185,7 @@ export default function PdfCompressor() {
             <div className="flex items-start justify-between gap-4">
               <div className="flex min-w-0 items-center gap-4">
                 <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-foreground text-background">
-                  <FileText className="size-5" />
+                  <Logo className="size-5" />
                 </div>
                 <div className="min-w-0">
                   <p className="truncate text-base font-medium">{file?.name}</p>
@@ -326,6 +327,7 @@ export default function PdfCompressor() {
                       : ""}
                   </p>
                 </div>
+                <PdfPreview data={result.blob} />
                 <div className="flex flex-col gap-2 sm:flex-row">
                   <Button size="lg" className="w-full sm:flex-1" onClick={handleDownload}>
                     <Download className="size-4" />

@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { FileText, Mail, Globe } from "lucide-react";
+import { Mail, Globe } from "lucide-react";
+import Logo from "@/components/logo";
+import Container from "@/components/container";
 
 type IconComponent = (props: { className?: string }) => ReactNode;
 
@@ -47,10 +49,10 @@ const LINKS = [
 export default function SiteFooter() {
   return (
     <footer className="border-t border-border/60">
-      <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-8 px-6 py-12 sm:px-8 sm:py-16 lg:px-10">
+      <Container className="flex-col items-center gap-8 px-6 py-12 sm:px-8 sm:py-16 lg:px-10">
         <div className="flex flex-col items-center gap-3 text-center">
           <span className="flex size-9 items-center justify-center rounded-lg bg-foreground text-background">
-            <FileText className="size-4" />
+            <Logo className="size-5" />
           </span>
           <p className="text-sm text-muted-foreground">
             Made with care by{" "}
@@ -87,7 +89,7 @@ export default function SiteFooter() {
         <p className="text-xs text-muted-foreground/70">
           © {new Date().getFullYear()} LowPDF · Created by Dhiraj Arya.
         </p>
-      </div>
+      </Container>
     </footer>
   );
 }

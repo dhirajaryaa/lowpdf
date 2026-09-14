@@ -70,7 +70,19 @@ src/
 
 ## Deployment
 
-Fully static-friendly. Deploys to Vercel / Netlify / Cloudflare Pages as-is. No environment variables required.
+Fully static-friendly. Deploys to Vercel / Netlify / Cloudflare Pages as-is.
+
+### Site URL (SEO / Open Graph)
+
+One place controls the absolute base URL used for canonical, `og:url`, `og:image`,
+and `twitter:image` tags: the `NEXT_PUBLIC_SITE_URL` env var (see `.env.example`).
+
+- If set, it wins (don't include a trailing slash). Reads also fall back to `SITE_URL`.
+- If unset, the Vercel production URL is used automatically on Vercel.
+- Otherwise it falls back to `http://localhost:3000`.
+
+Client-side consumers that need the URL should use `NEXT_PUBLIC_` — server-side
+metadata resolves it through `src/lib/site.ts`.
 
 ## Author
 

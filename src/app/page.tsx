@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { MonitorDown, FileCheck2, ShieldCheck } from "lucide-react";
 import PdfCompressor from "@/components/pdf-compressor";
 import MoreTools from "@/components/more-tools";
+import Container from "@/components/container";
 import { Card, CardContent } from "@/components/ui/card";
 
 const FEATURES = [
@@ -109,9 +110,9 @@ function Section({
     <section
       className={`space-y-12 px-6 py-16 sm:px-8 sm:space-y-16 sm:py-24 lg:px-10 ${className}`}
     >
-      <div className="mx-auto flex w-full max-w-7xl flex-col items-center space-y-12 sm:space-y-16">
+      <Container className="flex-col items-center space-y-12 sm:space-y-16">
         {children}
-      </div>
+      </Container>
     </section>
   );
 }
