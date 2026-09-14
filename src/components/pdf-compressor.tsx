@@ -1,11 +1,12 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
-  ArrowLeft,
   CheckCircle2,
   ChevronDown,
   Download,
+  Eye,
   Loader2,
   Lock,
   UploadCloud,
@@ -16,6 +17,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import Logo from "@/components/logo";
 import PdfPreview from "@/components/pdf-preview";
+import {
+  clearCompressorState,
+  loadCompressorState,
+  saveCompressorState,
+} from "@/lib/compressor-store";
+import {
+  clearPreview,
+  savePreview,
+} from "@/lib/preview-store";
 import { Slider } from "@/components/ui/slider";
 
 type Status = "idle" | "ready" | "compressing" | "done" | "error";
@@ -58,6 +68,54 @@ export default function PdfCompressor() {
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const dragDepth = useRef(0);
+  const openingPreview = useRef(false);
+  const prevStatus = useRef<Status>("idle");
+  const router = useRouter();
+
+  useEffect(() => {
+    let cancelled = false;
+    loadCompressorState()
+      .then((saved) => {
+        if (cancelled || !saved?.file) return;
+        setFile(saved.file);
+        setLevel(saved.level);
+        setPresetId(saved.presetId);
+        setShowAdvanced(saved.showAdvanced);
+        setResult(saved.result);
+        setError(saved.error);
+        const restored: Status =
+          saved.status === "ready" || saved.status === "done" || saved.status === "error"
+            ? saved.status
+            : "ready";
+        setStatus(restored);
+        prevStatus.current = restored;
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    prevStatus.current = status;
+    if (!file) {
+      clearCompressorState().catch(() => {});
+      return;
+    }
+    if (status === "ready" || status === "done") {
+      saveCompressorState({
+        status,
+        file,
+        level,
+        presetId,
+        showAdvanced,
+        result,
+        error,
+      }).catch(() => {});
+    }
+    // Persist only on file/result/status changes (not on slider drags).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, file, result]);
 
   const compression = useMemo(() => {
     if (!file || !result) return null;
@@ -136,7 +194,7 @@ export default function PdfCompressor() {
     }
   }, [file, level, status]);
 
-  const handleDownload = useCallback(() => {
+  const handleDownload = useCallback(async () => {
     if (!result) return;
     const baseName = (file?.name ?? "document.pdf").replace(/\.pdf$/i, "");
     const url = URL.createObjectURL(result.blob);
@@ -145,7 +203,33 @@ export default function PdfCompressor() {
     anchor.download = `${baseName}-compressed.pdf`;
     anchor.click();
     URL.revokeObjectURL(url);
+    try {
+      await clearCompressorState();
+      await clearPreview();
+    } catch {
+      // Storage cleanup is best-effort.
+    }
   }, [result, file]);
+
+  const handlePreview = useCallback(async () => {
+    if (!result || openingPreview.current) return;
+    openingPreview.current = true;
+    try {
+      await saveCompressorState({
+        status: "done",
+        file,
+        level,
+        presetId,
+        showAdvanced,
+        result,
+        error,
+      });
+      await savePreview(result.blob, file?.name ?? "compressed.pdf");
+      router.push("/preview");
+    } finally {
+      openingPreview.current = false;
+    }
+  }, [result, file, level, presetId, showAdvanced, error, router]);
 
   const reset = useCallback(() => {
     setFile(null);
@@ -156,12 +240,15 @@ export default function PdfCompressor() {
     setPresetId("balanced");
     setLevel(55);
     setShowAdvanced(false);
+    prevStatus.current = "idle";
     if (inputRef.current) inputRef.current.value = "";
+    clearCompressorState().catch(() => {});
+    clearPreview().catch(() => {});
   }, []);
 
   return (
-    <Card className="w-full max-w-2xl border-border/60 bg-card shadow-sm sm:rounded-3xl">
-      <CardContent className="p-6 sm:p-12">
+    <Card className="w-full max-w-2xl border-border/60 bg-card shadow-sm p-0! sm:rounded-3xl">
+      <CardContent className="p-6 sm:p-12 md:p-16">
         <input
           ref={inputRef}
           type="file"
@@ -329,13 +416,18 @@ export default function PdfCompressor() {
                 </div>
                 <PdfPreview data={result.blob} />
                 <div className="flex flex-col gap-2 sm:flex-row">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="w-full sm:flex-1"
+                    onClick={handlePreview}
+                  >
+                    <Eye className="size-4" />
+                    View Preview
+                  </Button>
                   <Button size="lg" className="w-full sm:flex-1" onClick={handleDownload}>
                     <Download className="size-4" />
-                    Download compressed PDF
-                  </Button>
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto" onClick={handleCompress}>
-                    <ArrowLeft className="size-4" />
-                    Re-compress
+                    Download
                   </Button>
                 </div>
               </div>

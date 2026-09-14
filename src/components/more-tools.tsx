@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Container from "@/components/container";
+import { FadeIn } from "@/components/animations";
 import { cn } from "@/lib/utils";
 
 export default function MoreTools() {
@@ -20,52 +21,58 @@ export default function MoreTools() {
           </p>
         </div>
 
-        <Card className="w-full max-w-md border-border/60 bg-background sm:rounded-3xl sm:shadow-md">
-          <CardContent className="flex flex-col gap-4 p-6 sm:p-8">
-            <div className="flex size-12 items-center justify-center overflow-hidden rounded-xl bg-muted">
-              <Image
-                src="/compressly.webp"
-                alt="Compressly logo"
-                width={32}
-                height={32}
-                className="size-8"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <h3 className="text-lg font-semibold">Compressly</h3>
-              <p className="text-sm leading-relaxed text-muted-foreground lg:text-base">
-                Compress images and files in bulk — PNG, JPG, WebP and PDF. Batch
-                mode with a simple drag-and-drop interface.
-              </p>
-            </div>
-            <div className="pt-2">
-              <Link
-                href="https://compressly.dhirajarya.in"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                Compress images
-                <ArrowUpRight className="size-4" />
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
+        <FadeIn hover className="w-full">
+          <div className="flex justify-center transition-shadow duration-300 hover:shadow-md">
+            <Card className="w-full max-w-md border-border/60 bg-background sm:rounded-3xl sm:shadow-md">
+              <CardContent className="flex flex-col gap-4 p-6 sm:p-8">
+                <div className="flex size-12 items-center justify-center overflow-hidden rounded-xl bg-muted">
+                  <Image
+                    src="/compressly.webp"
+                    alt="Compressly logo"
+                    width={32}
+                    height={32}
+                    className="size-8"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="text-lg font-semibold">Compressly</h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground lg:text-base">
+                    Compress images and files in bulk — PNG, JPG, WebP and PDF. Batch
+                    mode with a simple drag-and-drop interface.
+                  </p>
+                </div>
+                <div className="pt-2">
+                  <Link
+                    href="https://compressly.dhirajarya.in"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    Compress images
+                    <ArrowUpRight className="size-4" />
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </FadeIn>
 
-        <div className="w-full py-2 flex items-center justify-center">
-          <Link
-            href="https://tools.dhirajarya.in"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn(
-              buttonVariants({ variant: "outline", size: "lg" }),
-              "rounded-full px-8",
-            )}
-          >
-            Explore more tools
-            <ArrowUpRight className="size-4" />
-          </Link>
-        </div>
+        <FadeIn className="w-full">
+          <div className="w-full flex items-center justify-center">
+            <Link
+              href="https://tools.dhirajarya.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                buttonVariants({ variant: "outline", size: "lg" }),
+                "rounded-full px-8",
+              )}
+            >
+              Explore more tools
+              <ArrowUpRight className="size-4" />
+            </Link>
+          </div>
+        </FadeIn>
       </Container>
     </section>
   );
